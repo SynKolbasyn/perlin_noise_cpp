@@ -25,7 +25,7 @@ namespace sk::noise {
 
     private:
         uint64_t scale;
-        std::vector<std::vector<T>> points;
+        std::vector<std::vector<Grid_Point<T>>> points;
 
         T interpolate(T a, T b, T t);
 
@@ -43,12 +43,12 @@ namespace sk::noise {
     template<typename T>
     Grid<T>::Grid(const uint64_t x, const uint64_t y, uint64_t scale) {
         this->scale = scale;
-        points = std::vector<std::vector<T>> {};
+        points = std::vector<std::vector<Grid_Point<T>>> {};
 
         for (uint64_t i = 0; i < y; ++i) {
             std::vector<Grid_Point<T>> points_line {};
             for (uint64_t j = 0; j < x; ++j) {
-                points_line.push_back(Grid_Point<T> {j, i});
+                points_line.push_back(Grid_Point<T> {static_cast<T>(j), static_cast<T>(i)});
             }
             points.push_back(points_line);
         }
@@ -65,15 +65,15 @@ namespace sk::noise {
         Grid_Point<T> lup = points[static_cast<uint64_t>(std::ceil(point.y))][static_cast<uint64_t>(std::floor(point.x))];
         Grid_Point<T> rup = points[static_cast<uint64_t>(std::ceil(point.y))][static_cast<uint64_t>(std::ceil(point.x))];
 
-        T a1 = lbp * math::Vector<T> {lbp.point, point};
-        T b1 = rbp * math::Vector<T> {rbp.point, point};
-        T a2 = lup * math::Vector<T> {lup.point, point};
-        T b2 = rup * math::Vector<T> {rup.point, point};
+        T a1 = lbp.unit_vector * math::Vector<T> {lbp.point, point};
+        T b1 = rbp.unit_vector * math::Vector<T> {rbp.point, point};
+        T a2 = lup.unit_vector * math::Vector<T> {lup.point, point};
+        T b2 = rup.unit_vector * math::Vector<T> {rup.point, point};
 
         T a3 = interpolate(a1, b1, tx);
         T b3 = interpolate(a2, b2, tx);
 
-        return interpolate(a3, b3, ty);
+        return interpolate(a3, b3, ty) * std::pow(0.5, scale - 1);
     }
 
 

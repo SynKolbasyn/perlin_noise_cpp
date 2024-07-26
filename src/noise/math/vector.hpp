@@ -19,9 +19,13 @@ namespace sk::noise::math {
     public:
         Vector();
         Vector(Point<T> a, Point<T> b);
+
+        T operator*(Vector rhs);
+
         T x();
         T y();
         T len();
+
         Vector to_unit();
 
     private:
@@ -41,6 +45,13 @@ namespace sk::noise::math {
         this->a = a;
         this->b = b;
     }
+
+
+    template<typename T>
+    T Vector<T>::operator*(Vector rhs) {
+        return x() * rhs.x() + y() * rhs.y();
+    }
+
 
 
     template<typename T>
