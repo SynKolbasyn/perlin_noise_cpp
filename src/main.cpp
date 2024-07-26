@@ -1,7 +1,8 @@
 #include <iostream>
 #include <stdfloat>
 
-#include "noise/math/vector.hpp"
+#include "noise/grid_point.hpp"
+#include "noise/random.hpp"
 
 
 using namespace sk::noise;
@@ -11,9 +12,15 @@ typedef std::float64_t t;
 
 
 int main() {
-    math::Vector<t> vector {{0, 0}, {1, 1}};
+    SEED = time(nullptr);
 
-    std::cout << vector.to_unit().len() << std::endl;
+    Grid_Point<t> grid_point {0, 0};
+
+    std::cout <<
+        grid_point.unit_vector.x() << " | " <<
+        grid_point.unit_vector.y() << " -> " <<
+        grid_point.unit_vector.len() <<
+    std::endl;
 
     return 0;
 }
